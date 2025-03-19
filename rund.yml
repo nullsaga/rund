@@ -1,0 +1,4 @@
+risqid:
+  webhook:
+    provider: "github"
+  run: "deploy_script1.sh"
