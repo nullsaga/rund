@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"rund/internal/api"
+	"sigs.k8s.io/yaml"
 	"syscall"
 )
 
@@ -18,10 +19,10 @@ const (
 	currentVersion = "0.0.1"
 )
 
-const usage = `Usage: alfred [options...]:
+const usage = `Usage: rund [options...]:
   -h, --ip <ip>        the IP address or hostname on which the API server will listen
   -p, --port <port>    the port number on which the API server will listen
-  -c, --config <file>  the projects configuration file to load
+  -c, --config <file>  path to the configuration file to use
   -v, --verbose        increase output verbosity
   -V, --version        display version information and exit
   -h, --help           display this help text and exit
@@ -64,6 +65,13 @@ func main() {
 
 	if !verbose {
 		log.SetOutput(io.Discard)
+	}
+
+	if configFilePath != "" {
+		file, err := os.ReadFile(configFilePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	mux := http.NewServeMux()
