@@ -3,3 +3,6 @@ rund: build
 
 build:
 	@go build -o bin/rund cmd/rund/main.go
+
+test:
+	go test ./...

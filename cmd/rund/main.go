@@ -45,14 +45,14 @@ func main() {
 
 	slog.SetDefault(slog.New(handler))
 
-	rootConf, err := conf.NewLoader().LoadConf(options.ConfPath)
+	projectsConf, err := conf.NewLoader().LoadConf(options.ConfPath)
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
 
 	server := api.NewServer(options.Addr)
-	server.RegisterHandlers(rootConf)
+	server.RegisterHandlers(projectsConf)
 
 	go func() {
 		if err = server.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {

@@ -1,0 +1,8 @@
+projects:
+  default:
+    secret: "api-secret"
+    webhook:
+      provider: "auto"
+      secret: "webhook-secret"
+    deploy:
+      exec: "sh::deploy_script.sh"
