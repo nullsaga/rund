@@ -1,4 +1,4 @@
-module rund
+module github.com/nullsaga/rund
 
 go 1.24
 

@@ -1,4 +1,10 @@
 risqid:
-  webhook:
-    provider: "github"
-  run: "deploy_script1.sh"
+  api:
+    webhook:
+      provider: "github"
+    secret: "925$6a3&25f2d47c%6dd60*5309de79%26"
+    accept:
+      - "127.0.0.1"
+      - "localhost"
+  deploy:
+    exec: "python3::deploy_script.py"
