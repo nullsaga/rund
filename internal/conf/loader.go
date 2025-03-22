@@ -14,7 +14,7 @@ func NewLoader() *Loader {
 	return &Loader{}
 }
 
-func (l *Loader) LoadConf(path string) (*RootConf, error) {
+func (l *Loader) LoadConf(path string) (*ProjectsConf, error) {
 	if path == "" {
 		return nil, errors.New("no conf file specified")
 	}
@@ -28,7 +28,7 @@ func (l *Loader) LoadConf(path string) (*RootConf, error) {
 		return nil, fmt.Errorf("failed to read conf file: %w", err)
 	}
 
-	var rootConf *RootConf
+	var rootConf *ProjectsConf
 	err = yaml.Unmarshal(file, &rootConf)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse conf file: %w", err)

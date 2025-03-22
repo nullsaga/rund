@@ -25,7 +25,7 @@ func NewServer(addr string) *Server {
 	}
 }
 
-func (s *Server) RegisterHandlers(rootConf *conf.RootConf) {
+func (s *Server) RegisterHandlers(projectsConf *conf.ProjectsConf) {
 	s.router.HandleFunc("POST /v1/webhook/{hook}", s.makeHandler(NewWebhookHandler().Handle))
 }
 

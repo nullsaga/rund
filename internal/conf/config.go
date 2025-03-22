@@ -15,6 +15,6 @@ type Project struct {
 	Deploy  *Deploy  `json:"deploy"`
 }
 
-type RootConf struct {
-	Projects map[string]*Project `yaml:"projects"`
+type ProjectsConf struct {
+	Projects map[string]*Project `json:"projects"`
 }
