@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/nullsaga/rund/internal/api"
 	"github.com/nullsaga/rund/internal/cli"
+	"github.com/nullsaga/rund/internal/conf"
 	"log/slog"
 	"net/http"
 	"os"
@@ -44,12 +45,18 @@ func main() {
 
 	slog.SetDefault(slog.New(handler))
 
+	rootConf, err := conf.NewLoader().LoadConf(options.ConfPath)
+	if err != nil {
+		slog.Error(err.Error())
+		os.Exit(1)
+	}
+
 	server := api.NewServer(options.Addr)
-	server.RegisterHandlers()
+	server.RegisterHandlers(rootConf)
 
 	go func() {
-		if err := server.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			slog.Error("failed to start api server", "error", err)
+		if err = server.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error(err.Error())
 		}
 	}()
 
@@ -62,8 +69,8 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if err := server.Stop(ctx); err != nil {
-		slog.Error("api server shutdown failed", "error", err)
+	if err = server.Stop(ctx); err != nil {
+		slog.Error(err.Error())
 	}
 
 	slog.Info("api server shutdown completed successfully")
