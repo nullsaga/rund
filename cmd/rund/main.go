@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"github.com/nullsaga/rund/internal/api"
 	"github.com/nullsaga/rund/internal/cli"
 	"github.com/nullsaga/rund/internal/conf"
-	"log/slog"
+	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -24,39 +24,22 @@ func main() {
 	options := cli.NewWithDefaultOptions()
 	options.Parse()
 
-	if options.Version {
-		fmt.Println(version)
-		os.Exit(0)
+	if !options.Verbose {
+		log.SetOutput(io.Discard)
 	}
-
-	if options.Help {
-		flag.Usage()
-		os.Exit(0)
-	}
-
-	logLevel := slog.LevelError
-	if options.Verbose {
-		logLevel = slog.LevelInfo
-	}
-
-	handler := slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{
-		Level: logLevel,
-	})
-
-	slog.SetDefault(slog.New(handler))
 
 	projectsConf, err := conf.NewLoader().LoadConf(options.ConfPath)
 	if err != nil {
-		slog.Error(err.Error())
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	server := api.NewServer(options.Addr)
+	server := api.NewServer(fmt.Sprintf("%s:%d", options.Ip, options.Port))
 	server.RegisterHandlers(projectsConf)
 
 	go func() {
 		if err = server.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			slog.Error(err.Error())
+			fmt.Println(err.Error())
 		}
 	}()
 
@@ -64,14 +47,14 @@ func main() {
 	defer stop()
 
 	<-shutdown.Done()
-	slog.Info("shutdown signal received")
+	log.Println("shutdown signal received")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	if err = server.Stop(ctx); err != nil {
-		slog.Error(err.Error())
+		log.Println(err.Error())
 	}
 
-	slog.Info("api server shutdown completed successfully")
+	log.Println("server shutdown completed")
 }
