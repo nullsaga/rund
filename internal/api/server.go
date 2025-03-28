@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/nullsaga/rund/internal/conf"
 	"log"
-	"log/slog"
 	"net/http"
 )
 
@@ -44,7 +43,7 @@ func (s *Server) makeHandler(h HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := h(w, r); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			slog.Error(err.Error())
+			log.Println(err.Error())
 		}
 	}
 }
