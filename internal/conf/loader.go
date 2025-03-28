@@ -20,7 +20,7 @@ func (l *Loader) LoadConf(path string) (*ProjectsConf, error) {
 	}
 
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		return nil, fmt.Errorf("conf file does not exist: %s", path)
+		return nil, fmt.Errorf("configuration file does not exist at path: %s", path)
 	}
 
 	file, err := os.ReadFile(path)

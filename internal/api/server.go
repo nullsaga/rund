@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"github.com/nullsaga/rund/internal/conf"
+	"log"
 	"log/slog"
 	"net/http"
 )
@@ -30,12 +31,12 @@ func (s *Server) RegisterHandlers(projectsConf *conf.ProjectsConf) {
 }
 
 func (s *Server) Start() error {
-	slog.Info("starting api server", "addr", s.server.Addr)
+	log.Println("listening on", s.server.Addr)
 	return s.server.ListenAndServe()
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	slog.Info("attempting to shutdown down api server")
+	log.Println("server shutdown initiated")
 	return s.server.Shutdown(ctx)
 }
 
